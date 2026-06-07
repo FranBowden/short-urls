@@ -11,6 +11,8 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
+Route::get('/{short_code}', [DashboardController::class, 'redirect'])->where('short_code', '[A-Za-z0-9]{6}');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
@@ -22,4 +24,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

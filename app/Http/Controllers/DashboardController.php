@@ -9,6 +9,9 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    /**
+     * Display the user's dashboard with their short URLs
+     */
     public function index(): View
     {
         $shortUrls = ShortUrl::where('user_id', auth()->id())
@@ -18,6 +21,9 @@ class DashboardController extends Controller
         return view('dashboard', compact('shortUrls'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -31,5 +37,14 @@ class DashboardController extends Controller
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Short URL created!');
+    }
+
+    /**
+     * Redirect short code to original URL
+     */
+    public function redirect($short_code): RedirectResponse
+    {
+        $shortUrl = ShortUrl::where('short_code', $short_code)->firstOrFail();
+        return redirect()->away($shortUrl->original_url);
     }
 }
