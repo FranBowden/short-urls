@@ -28,12 +28,14 @@ class DashboardController extends Controller
     {
         $request->validate([
             'original_url' => ['required', 'url', 'max:2048'],
+            'timeout' => ['nullable', 'integer', 'in:0,1,24,168,720'],
         ]);
 
         ShortUrl::create([
             'user_id' => auth()->id(),
             'original_url' => $request->original_url,
             'short_code' => ShortUrl::generateUniqueShortCode(),
+            'timeout' => $request->integer('timeout', 0),
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Short URL created!');
@@ -45,6 +47,11 @@ class DashboardController extends Controller
     public function redirect($short_code): RedirectResponse
     {
         $shortUrl = ShortUrl::where('short_code', $short_code)->firstOrFail();
+
+        if ($shortUrl->isExpired()) {
+            abort(410, 'This short URL has expired.');
+        }
+
         return redirect()->away($shortUrl->original_url);
     }
 }

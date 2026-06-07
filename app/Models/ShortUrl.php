@@ -14,7 +14,20 @@ class ShortUrl extends Model
         'user_id',
         'original_url',
         'short_code',
+        'timeout',
     ];
+
+    /**
+     * Returns true if the link has a timeout set and it has elapsed.
+     */
+    public function isExpired(): bool
+    {
+        if ($this->timeout === 0) {
+            return false;
+        }
+
+        return $this->created_at->addHours($this->timeout)->isPast();
+    }
 
     /**
      * Get the user that owns the short URL
