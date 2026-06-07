@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 class ShortUrl extends Model
 {
+    protected $table = 'url_history';
+
     protected $fillable = [
         'user_id',
         'original_url',
