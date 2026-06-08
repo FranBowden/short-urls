@@ -1,4 +1,4 @@
-# Short URLs
+# Link Shortener
 
 A Laravel application for shortening URLs with expiry control and live visit tracking
 
