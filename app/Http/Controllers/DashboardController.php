@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShortUrl;
+use App\Models\UrlVisit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,15 +16,33 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        $shortUrls = ShortUrl::where('user_id', auth()->id())
-            ->latest()
-            ->get();
+        $userId = auth()->id();
+        $shortUrls = ShortUrl::activeShortUrls($userId);
+        $expiredUrls = ShortUrl::getExpiredUrls($userId);
 
-        return view('dashboard', compact('shortUrls'));
+        return view(
+            'dashboard',
+            compact('shortUrls', 'expiredUrls')
+        );
+    }
+
+    /**
+     * Return visit counts for the authenticated user's URLs.
+     */
+    public function visitCounts(): JsonResponse
+    {
+        $counts = ShortUrl::where('user_id', auth()->id())
+            ->withCount('visits')
+            ->get(['id', 'visits_count'])
+            ->mapWithKeys(fn (ShortUrl $url) => [$url->id => $url->visits_count]);
+
+        return response()->json($counts);
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  Request  $request  The incoming request containing the original URL and optional timeout
      */
     public function store(Request $request): RedirectResponse
     {
@@ -43,14 +63,18 @@ class DashboardController extends Controller
 
     /**
      * Redirect short code to original URL
+     *
+     * @param  string  $short_code  The short code url to redirect to original URL
      */
-    public function redirect($short_code): RedirectResponse
+    public function redirect(string $short_code): RedirectResponse|View
     {
         $shortUrl = ShortUrl::where('short_code', $short_code)->firstOrFail();
 
         if ($shortUrl->isExpired()) {
-            abort(410, 'This short URL has expired.');
+            return view('expired');
         }
+
+        UrlVisit::create(['short_url_id' => $shortUrl->id]);
 
         return redirect()->away($shortUrl->original_url);
     }

@@ -16,6 +16,7 @@ Route::get('/{short_code}', [DashboardController::class, 'redirect'])->where('sh
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
+    Route::get('/dashboard/visit-counts', [DashboardController::class, 'visitCounts'])->name('dashboard.visit-counts');
 });
 
 Route::middleware('auth')->group(function () {
@@ -24,4 +25,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

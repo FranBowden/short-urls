@@ -50,7 +50,7 @@
             {{-- Short URLs list --}}
             @if ($shortUrls->isNotEmpty())
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Your Short URLs</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Your Active Short URLs</h3>
 
                 <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
                     <thead>
@@ -58,6 +58,8 @@
                             <th class="pb-2 font-medium">Original URL</th>
                             <th class="pb-2 font-medium">Short URL</th>
                             <th class="pb-2 font-medium">Created</th>
+                            <th class="pb-2 font-medium">Visitors</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -70,6 +72,39 @@
                                 </a>
                             </td>
                             <td class="py-2">{{ $shortUrl->created_at->diffForHumans() }}</td>
+                            <td class="py-2" data-visits="{{ $shortUrl->id }}">{{ $shortUrl->visits_count }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
+
+            {{-- Expired URLs --}}
+            @if ($expiredUrls->isNotEmpty())
+            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Expired Urls</h3>
+
+                <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+                    <thead>
+                        <tr class="border-b dark:border-gray-600">
+                            <th class="pb-2 font-medium">Original URL</th>
+                            <th class="pb-2 font-medium">Short URL</th>
+                            <th class="pb-2 font-medium">Expired</th>
+                            <th class="pb-2 font-medium">Visitors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($expiredUrls as $expiredUrl)
+                        <tr class="border-b dark:border-gray-700">
+                            <td class="py-2 max-w-xs truncate">{{ $expiredUrl->original_url }}</td>
+                            <td class="py-2">
+                                <a href="{{ url($expiredUrl->short_code) }}" class="text-blue-500 hover:underline" target="_blank">
+                                    {{ url($expiredUrl->short_code) }}
+                                </a>
+                            </td>
+                            <td class="py-2">{{ $expiredUrl->expired_at->diffForHumans() }}</td>
+                            <td class="py-2" data-visits="{{ $expiredUrl->id }}">{{ $expiredUrl->visits_count }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -79,4 +114,24 @@
 
         </div>
     </div>
+    @if ($shortUrls->isNotEmpty() || $expiredUrls->isNotEmpty())
+    <div data-visit-counts-url="{{ route('dashboard.visit-counts') }}" hidden></div>
+    <script>
+        const url = document.querySelector('[data-visit-counts-url]').dataset.visitCountsUrl
+        setInterval(() => {
+            fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(r => r.json())
+                .then(counts => {
+                    document.querySelectorAll('[data-visits]').forEach(cell => {
+                        const id = cell.dataset.visits
+                        if (counts[id] !== undefined) cell.textContent = counts[id]
+                    })
+                })
+        }, 5000)
+    </script>
+    @endif
 </x-app-layout>
