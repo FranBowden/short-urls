@@ -23,10 +23,6 @@ class ShortUrl extends Model
         'expired_at' => 'datetime',
     ];
 
-    public function visits(): HasMany
-    {
-        return $this->hasMany(UrlVisit::class);
-    }
 
     /**
      * Generate a unique short code for the URL
@@ -95,5 +91,29 @@ class ShortUrl extends Model
     public static function getExpiredUrls(int $userId)
     {
         return self::where('user_id', $userId)->whereNotNull('expired_at')->withCount('visits')->latest()->get();
+    }
+
+    /**
+     * Get the label for the expiry time
+     *
+     * @return string
+     */
+    public function expiryLabel(): string
+    {
+        return match ($this->timeout) {
+            1 => '1 hour',
+            24 => '1 day',
+            168 => '1 week',
+            720 => '1 month',
+            default => 'No expiry',
+        };
+    }
+
+    /**
+     * Get the visits for the short URL
+     */
+    public function visits(): HasMany
+    {
+        return $this->hasMany(UrlVisit::class);
     }
 }
