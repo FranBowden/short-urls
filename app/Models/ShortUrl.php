@@ -22,7 +22,7 @@ class ShortUrl extends Model
     protected $casts = [
         'expired_at' => 'datetime',
     ];
-
+    
 
     /**
      * Generate a unique short code for the URL
@@ -49,7 +49,10 @@ class ShortUrl extends Model
     public static function activeShortUrls(int $userId)
     {
         return self::where('user_id', $userId)
-            ->whereNull('expired_at')
+            ->where(function ($query) {
+                $query->where('timeout', 0)
+                    ->orWhereRaw("created_at + (timeout * INTERVAL '1 hour') > NOW()");
+            })
             ->withCount('visits')
             ->latest()
             ->get();
@@ -60,17 +63,14 @@ class ShortUrl extends Model
      */
     public function isExpired(): bool
     {
-        // timeout of 0 means no expiration
         if ($this->timeout === 0) {
             return false;
         }
 
-        if ($this->expired_at !== null) {
-            return true;
-        }
-
         if ($this->created_at->addHours($this->timeout)->isPast()) {
-            $this->update(['expired_at' => now()]);
+            if ($this->expired_at === null) {
+                $this->update(['expired_at' => $this->created_at->addHours($this->timeout)]);
+            }
 
             return true;
         }
@@ -90,7 +90,12 @@ class ShortUrl extends Model
      */
     public static function getExpiredUrls(int $userId)
     {
-        return self::where('user_id', $userId)->whereNotNull('expired_at')->withCount('visits')->latest()->get();
+        return self::where('user_id', $userId)
+            ->where('timeout', '>', 0)
+            ->whereRaw("created_at + (timeout * INTERVAL '1 hour') <= NOW()")
+            ->withCount('visits')
+            ->latest()
+            ->get();
     }
 
     /**
