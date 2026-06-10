@@ -26,18 +26,18 @@
                         name="original_url"
                         value="{{ old('original_url') }}"
                         placeholder="https://example.com/your-long-url"
-                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
+                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                         required>
                     <select
                         name="timeout"
-                        class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white text-sm">
+                        class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                         <option value="0" {{ old('timeout', '0') === '0' ? 'selected' : '' }}>No expiry</option>
                         <option value="1" {{ old('timeout') === '1' ? 'selected' : '' }}>1 hour</option>
                         <option value="24" {{ old('timeout') === '24' ? 'selected' : '' }}>1 day</option>
                         <option value="168" {{ old('timeout') === '168' ? 'selected' : '' }}>1 week</option>
                         <option value="720" {{ old('timeout') === '720' ? 'selected' : '' }}>1 month</option>
                     </select>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         Shorten
                     </button>
                 </form>
@@ -57,10 +57,10 @@
                     <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <div class="flex items-start justify-between gap-4">
                             <p class="text-sm text-gray-500 dark:text-gray-400 truncate min-w-0">{{ $shortUrl->original_url }}</p>
-                            <span class="text-xs text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-full shrink-0">{{ $shortUrl->expiryLabel() }}</span>
+                            <span class="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full shrink-0">{{ $shortUrl->expiryLabel() }}</span>
                         </div>
                         <div class="flex items-center justify-between mt-2 gap-4">
-                            <a href="{{ url($shortUrl->short_code) }}" class="text-sm font-medium text-indigo-500 hover:underline" target="_blank">
+                            <a href="{{ url($shortUrl->short_code) }}" class="text-sm font-medium text-blue-500 hover:underline" target="_blank">
                                 {{ url($shortUrl->short_code) }}
                             </a>
                             <div class="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500 shrink-0">
