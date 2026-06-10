@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Sign in to your account</p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -44,4 +49,11 @@
             </x-primary-button>
         </div>
     </form>
+
+    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+            Don't have an account?
+            <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-500 font-medium">Sign up</a>
+        </p>
+    </div>
 </x-guest-layout>

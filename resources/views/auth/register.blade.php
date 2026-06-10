@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Create an account</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Start shortening links for free</p>
+    </div>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 

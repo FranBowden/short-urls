@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return Auth::check()
         ? redirect()->route('dashboard')
-        : redirect()->route('register');
-});
+        : view('welcome');
+})->name('home');
 
 Route::get('/{short_code}', [DashboardController::class, 'redirect'])->where('short_code', '[A-Za-z0-9]{6}');
 
