@@ -17,6 +17,7 @@ class DashboardController extends Controller
     public function index(): View
     {
         $userId = auth()->id();
+        ShortUrl::expireStaleUrls($userId);
         $shortUrls = ShortUrl::activeShortUrls($userId);
         $expiredUrls = ShortUrl::getExpiredUrls($userId);
 

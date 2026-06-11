@@ -23,13 +23,12 @@ class ShortUrl extends Model
         'expired_at' => 'datetime',
     ];
 
-
     /**
      * Generate a unique short code for the URL
      *
      * @return string
-     * - To do: Create other options such as generating their own custom code,
-     * allow the user to suggest the length of the code.
+     *                - To do: Create other options such as generating their own custom code,
+     *                allow the user to suggest the length of the code.
      */
     public static function generateUniqueShortCode(): string
     {
@@ -79,6 +78,18 @@ class ShortUrl extends Model
     }
 
     /**
+     * Expire any active URLs whose timeout has elapsed for a given user
+     */
+    public static function expireStaleUrls(int $userId): void
+    {
+        self::where('user_id', $userId)
+            ->whereNull('expired_at')
+            ->where('timeout', '>', 0)
+            ->get()
+            ->each->isExpired();
+    }
+
+    /**
      * Get all expired URLs for that user
      *
      * @param  int  $userId  The ID of the user to retrieve expired URLs for
@@ -95,8 +106,6 @@ class ShortUrl extends Model
 
     /**
      * Get the label for the expiry time
-     *
-     * @return string
      */
     public function expiryLabel(): string
     {
