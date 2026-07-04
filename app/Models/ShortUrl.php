@@ -34,7 +34,10 @@ class ShortUrl extends Model
     {
         do {
             $code = Str::random(6);
-        } while (self::where('short_code', $code)->exists());
+        } while (
+            self::where('short_code', $code)->exists() ||
+            GuestUrl::where('short_code', $code)->exists()
+        );
 
         return $code;
     }

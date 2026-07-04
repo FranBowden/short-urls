@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GuestUrl;
 use App\Models\ShortUrl;
 use App\Models\UrlVisit;
 use Illuminate\Http\JsonResponse;
@@ -69,14 +70,24 @@ class DashboardController extends Controller
      */
     public function redirect(string $short_code): RedirectResponse|View
     {
-        $shortUrl = ShortUrl::where('short_code', $short_code)->firstOrFail();
+        $shortUrl = ShortUrl::where('short_code', $short_code)->first();
 
-        if ($shortUrl->isExpired()) {
+        if ($shortUrl) {
+            if ($shortUrl->isExpired()) {
+                return view('expired');
+            }
+
+            UrlVisit::create(['short_url_id' => $shortUrl->id]);
+
+            return redirect()->away($shortUrl->original_url);
+        }
+
+        $guestUrl = GuestUrl::where('short_code', $short_code)->firstOrFail();
+
+        if ($guestUrl->isExpired()) {
             return view('expired');
         }
 
-        UrlVisit::create(['short_url_id' => $shortUrl->id]);
-
-        return redirect()->away($shortUrl->original_url);
+        return redirect()->away($guestUrl->original_url);
     }
 }
