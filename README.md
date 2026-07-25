@@ -2,7 +2,7 @@
 
 A Laravel application for shortening URLs with expiry control and live visit tracking
 
-[View Website Here](https://link-sn.free.laravel.cloud/register)
+[View Website Here](https://sh-url.com)
 
 - Sign up (these can be fake creds)
 - This will redirect you to the dashboard where you can create shorter url links that will redirect you 
