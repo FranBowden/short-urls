@@ -4,9 +4,6 @@ A Laravel application for shortening URLs with expiry control and live visit tra
 
 [View Website Here](https://sh-url.com)
 
-- Sign up (these can be fake creds)
-- This will redirect you to the dashboard where you can create shorter url links that will redirect you 
-
 ## Features
 
 ### URL Shortening
@@ -41,4 +38,12 @@ Once a link expires, visitors are shown a friendly "This URL has expired" page i
 - **PHP 8.5** / **Laravel 13**
 - **Laravel Breeze** — authentication scaffolding
 - **Tailwind CSS** — styling
-- **JS polling** — live visit counts 
+- **JS polling** — live visit counts
+
+<img width="1728" height="966" alt="image" src="https://github.com/user-attachments/assets/064a36d2-0da4-471c-ad33-6718f1cac67c" />
+
+<img width="1728" height="935" alt="image" src="https://github.com/user-attachments/assets/f6e7d481-643d-46ba-a4ff-a27869506633" />
+
+<img width="1710" height="935" alt="image" src="https://github.com/user-attachments/assets/00d7b388-3912-4d39-befc-ff9b4b9221e8" />
+
+<img width="1728" height="935" alt="image" src="https://github.com/user-attachments/assets/62c3d13b-ac6e-4efc-be85-c92a9071cc41" />
